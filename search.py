@@ -1,3 +1,5 @@
+import os
+
 input("Введите запрос пример [7999999999], [Виктор Викторович]")
 
 def search_files(query):
