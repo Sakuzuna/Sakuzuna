@@ -33,6 +33,15 @@ else:
     
 юзернейм()
 
+def print_with_delay(text, delay=0.2):
+    for char in text:
+        print(char, end='', flush=True)
+        time.sleep(delay)
+    print()
+
+print_with_delay("Привет бро я хочу сказать что не юзайте этот софт для манипуляции против других людей так как это может плохо 
+для тебя закончиться но ты скорее все ровно меня не послушаешься. Удачи!!!")
+
 
 print(f"{Red}     .--.--.                     ,-.           ")
 time.sleep(0.2)
