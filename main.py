@@ -4,7 +4,7 @@ import os
 import csv 
 import sys
 import time
-import subprocess
+import pandas as pd
 
 Red = Fore.RED 
 Yellow = Fore.YELLOW 
@@ -84,24 +84,31 @@ print(f"{White}          ║                    </// Coded by Sakuzuna \\\>     
 time.sleep(0.2)
 print(f"{White}          ╚════════════════════════════════════════════════════════════════════╝   ")
 
-input("Введите запрос пример [7999999999], [Виктор Викторович]")
+def search_in_txt_and_csv(file_path, search_query):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line_number, line in enumerate(file, start=1):
+            if search_query in line:
+                print(f"Найдено в {file_path}, строка {line_number}: {line.strip()}")
 
-def search_files(query):
-    # Путь к папке "data" вы можете поменять название папке просто поменяв нащвание папки в 51-ой строке
-    data_dir = os.path.join(os.getcwd(), 'data')
+def search_in_xlsx(file_path, search_query):
+    xlsx_data = pd.read_excel(file_path, engine='openpyxl')
+    for sheet_name in xlsx_data.sheet_names:
+        df = pd.read_excel(file_path, sheet_name=sheet_name)
+        for row_number, row in df.iterrows():
+            if row.astype(str).str.contains(search_query).any():
+                print(f"Найдено в {file_path} (лист: {sheet_name}), строка {row_number + 1}: {row.to_string(index=False)}")
 
-    # Посик по базам в папке "data"
-    for filename in os.listdir(data_dir):
-        # Проверка формата файлов
-        if filename.endswith(('.txt', '.csv', '.xlsx')):
-            # Чтение баз
-            filepath = os.path.join(data_dir, filename)
-            with open(filepath, 'r') as file:
-                for line_num, line in enumerate(file, start=1):
-                    # Найдено/Не найдено
-                    if query in line:
-                        # Есл найдено то
-                        print(f"База: {filename}, Строка {line_num}: {line.strip()}")
+def main():
+    search_query = input("Введите запрос для поиска: ")
+    current_directory = os.getcwd()
 
-query = '7999999999'
-search_files(query)
+    for filename in os.listdir(current_directory):
+        if filename.endswith('.txt') or filename.endswith('.csv'):
+            file_path = os.path.join(current_directory, filename)
+            search_in_txt_and_csv(file_path, search_query)
+        elif filename.endswith('.xlsx'):
+            file_path = os.path.join(current_directory, filename)
+            search_in_xlsx(file_path, search_query)
+
+if __name__ == '__main__':
+    main()
